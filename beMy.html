@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>💌 Be My Valentine?</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Nunito:wght@400;600;800&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink-light: #fff0f5;
+      --pink-mid:   #ffd6e0;
+      --pink-deep:  #ffb3c6;
+      --red-rose:   #e8356d;
+      --red-dark:   #c0234e;
+      --petal:      #ff6b9d;
+      --cream:      #fff8f0;
+      --shadow:     rgba(232, 53, 109, 0.25);
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    /* ── animated gradient background ── */
+    body {
+      background: linear-gradient(135deg, #ffe4ee 0%, #ffd6e0 30%, #ffb3c6 60%, #ffc8d8 100%);
+      background-size: 400% 400%;
+      animation: gradShift 8s ease infinite;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    @keyframes gradShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* ── floating petals ── */
+    .petals { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+    .petal {
+      position: absolute; top: -60px;
+      font-size: 1.4rem;
+      animation: fall linear infinite;
+      opacity: 0.7;
+      user-select: none;
+    }
+    @keyframes fall {
+      0%   { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* ── card ── */
+    .card {
+      position: relative; z-index: 1;
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(18px);
+      border: 2px solid rgba(255,255,255,0.9);
+      border-radius: 36px;
+      padding: clamp(2rem, 6vw, 4rem) clamp(2rem, 7vw, 5rem);
+      max-width: 560px; width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 60px var(--shadow), 0 0 0 1px rgba(255,255,255,.6) inset;
+      animation: cardPop 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+
+    @keyframes cardPop {
+      from { transform: scale(0.6) translateY(40px); opacity: 0; }
+      to   { transform: scale(1) translateY(0);      opacity: 1; }
+    }
+
+    /* ── envelope icon ── */
+    .envelope {
+      font-size: 3.5rem;
+      display: block;
+      margin-bottom: 1rem;
+      animation: wobble 2.5s ease-in-out infinite;
+    }
+    @keyframes wobble {
+      0%, 100% { transform: rotate(-4deg) scale(1); }
+      50%       { transform: rotate(4deg) scale(1.1); }
+    }
+
+    /* ── heading ── */
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 5vw, 2.6rem);
+      color: var(--red-rose);
+      line-height: 1.25;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.3rem;
+    }
+    h1 .name-highlight {
+      font-style: italic;
+      color: var(--red-dark);
+    }
+
+    .sub {
+      font-size: 0.95rem;
+      color: #d4608a;
+      margin-bottom: 2.2rem;
+      opacity: 0.85;
+    }
+
+    /* ── YES button ── */
+    .btn-yes {
+      display: inline-flex;
+      align-items: center; gap: 8px;
+      padding: 0.8em 2.2em;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #fff;
+      background: linear-gradient(135deg, var(--petal), var(--red-rose));
+      border: none; border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 6px 22px var(--shadow);
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+      text-decoration: none;
+    }
+    .btn-yes:hover {
+      transform: scale(1.08) translateY(-2px);
+      box-shadow: 0 10px 32px var(--shadow);
+    }
+    .btn-yes:active { transform: scale(0.97); }
+
+    /* ── NO button (fixed / evasive) ── */
+    #btn-no {
+      position: fixed;
+      z-index: 9999;
+      padding: 0.75em 1.8em;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      color: #a0335a;
+      background: rgba(255,255,255,0.82);
+      border: 2px solid #ffb3c6;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(200,80,120,0.18);
+      transition: box-shadow 0.15s;
+      backdrop-filter: blur(8px);
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    }
+
+    /* ── divider ── */
+    .divider {
+      display: flex; align-items: center; gap: 10px;
+      margin: 0 auto 1.5rem;
+      color: #e8a0bb;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, transparent, #ffb3c6, transparent);
+    }
+
+    /* ── hearts row ── */
+    .hearts-row {
+      font-size: 1.1rem;
+      letter-spacing: 6px;
+      margin-bottom: 1.6rem;
+      animation: pulseRow 1.8s ease-in-out infinite;
+    }
+    @keyframes pulseRow {
+      0%,100% { transform: scale(1); }
+      50%      { transform: scale(1.07); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- floating petals -->
+  <div class="petals" id="petals"></div>
+
+  <!-- card -->
+  <div class="card">
+    <span class="envelope">💌</span>
+
+    <h1 id="question">Will you be my Valentine? ❤️</h1>
+    <p class="sub">A question straight from my heart&nbsp;🌹</p>
+
+    <div class="hearts-row">🌸 🤍 💖 🤍 🌸</div>
+
+    <div class="divider">choose wisely</div>
+
+    <!-- YES button (anchors to success.html for plain HTML experience) -->
+    <a href="success.html" class="btn-yes" id="btn-yes">Yes 💖</a>
+  </div>
+
+  <!-- evasive NO button rendered outside card, as fixed -->
+  <button id="btn-no">No 💔</button>
+
+<script>
+  /* ── query‑string name injection ── */
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get('name') || params.get('Name') || '';
+    if (name.trim()) {
+      const h1 = document.getElementById('question');
+      h1.innerHTML =
+        '<span class="name-highlight">' + escapeHTML(name.trim()) + '</span>, will you be my Valentine? ❤️';
+    }
+
+    function escapeHTML(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+  })();
+
+  /* ── floating petals generator ── */
+  (function () {
+    const container = document.getElementById('petals');
+    const symbols = ['🌸','🌺','🌷','💮','🏵️','❤️','💕','🌹'];
+    const count = 22;
+    for (let i = 0; i < count; i++) {
+      const el = document.createElement('span');
+      el.className = 'petal';
+      el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.animationDuration = (5 + Math.random() * 10) + 's';
+      el.style.animationDelay = '-' + (Math.random() * 12) + 's';
+      el.style.fontSize = (0.9 + Math.random() * 1.2) + 'rem';
+      container.appendChild(el);
+    }
+  })();
+
+  /* ── evasive No button ── */
+  (function () {
+    const btn = document.getElementById('btn-no');
+    let isMoving = false;
+
+    /* place button at a random safe position */
+    function randomPosition() {
+      const bw = btn.offsetWidth  || 110;
+      const bh = btn.offsetHeight ||  46;
+      const margin = 14;
+      const maxX = window.innerWidth  - bw - margin;
+      const maxY = window.innerHeight - bh - margin;
+      const x = margin + Math.random() * maxX;
+      const y = margin + Math.random() * maxY;
+      btn.style.left = x + 'px';
+      btn.style.top  = y + 'px';
+    }
+
+    /* guarantee a NEW position different from current */
+    function flee() {
+      if (isMoving) return;
+      isMoving = true;
+      let attempts = 0;
+      const oldLeft = parseFloat(btn.style.left) || 0;
+      const oldTop  = parseFloat(btn.style.top)  || 0;
+      do {
+        randomPosition();
+        attempts++;
+      } while (
+        attempts < 10 &&
+        Math.abs(parseFloat(btn.style.left) - oldLeft) < 80 &&
+        Math.abs(parseFloat(btn.style.top)  - oldTop)  < 80
+      );
+      setTimeout(() => { isMoving = false; }, 120);
+    }
+
+    /* initial placement (below card, bottom‑right area) */
+    window.addEventListener('load', () => {
+      const bw = btn.offsetWidth  || 110;
+      const bh = btn.offsetHeight ||  46;
+      btn.style.left = (window.innerWidth  - bw - 40) + 'px';
+      btn.style.top  = (window.innerHeight - bh - 50) + 'px';
+    });
+
+    /* desktop – escape on mouse proximity */
+    document.addEventListener('mousemove', function (e) {
+      const rect = btn.getBoundingClientRect();
+      const cx = rect.left + rect.width  / 2;
+      const cy = rect.top  + rect.height / 2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 80) flee();   /* flee when cursor within 80 px */
+    });
+
+    /* also fire on mouseenter just in case */
+    btn.addEventListener('mouseenter', flee);
+
+    /* click – just flee, no action */
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      flee();
+      return false;
+    });
+
+    /* mobile – tap to flee */
+    btn.addEventListener('touchstart', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      flee();
+      return false;
+    }, { passive: false });
+
+    btn.addEventListener('touchend', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }, { passive: false });
+
+    /* re‑randomise on resize so button stays in viewport */
+    window.addEventListener('resize', randomPosition);
+  })();
+</script>
+</body>
+</html>
